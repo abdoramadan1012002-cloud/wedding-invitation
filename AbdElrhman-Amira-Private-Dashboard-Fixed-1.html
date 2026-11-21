@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>لوحة تحكم العروسين | AbdElrhman & Amira</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#10293A;--gold:#C9A45C;--cream:#F7F0E4;--muted:#A9B7BE;--line:rgba(201,164,92,.28);--body:'IBM Plex Sans Arabic',sans-serif;--ar:'Amiri',serif;box-sizing:border-box}*{box-sizing:inherit}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#1b4055,var(--navy) 65%);color:var(--cream);font:500 16px/1.7 var(--body);padding:28px 16px}.wrap{max-width:920px;margin:auto}.brand{text-align:center;margin:18px 0 30px}.brand b{display:block;direction:ltr;font:700 clamp(2rem,8vw,3.2rem)/1.2 'Dancing Script',cursive;color:var(--gold)}.brand span{color:var(--muted)}.panel{border:1px solid var(--line);border-radius:22px;padding:clamp(20px,5vw,34px);background:rgba(7,22,32,.55);box-shadow:0 18px 55px #06131d55}.login{max-width:430px;margin:0 auto}h1,h2{font:700 1.7rem var(--ar);margin:0 0 18px;text-align:center}label{display:block;margin:12px 0 5px}input{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:12px;background:#0c2230;color:var(--cream);font:500 1rem var(--body);text-align:left}button{border:1px solid var(--gold);border-radius:999px;padding:11px 22px;background:var(--gold);color:var(--navy);font:700 1rem var(--body);cursor:pointer}button:disabled{opacity:.55}.full{width:100%;margin-top:20px}.muted{color:var(--muted);text-align:center;font-size:.9rem}.error{color:#ffb4a8;min-height:1.5em}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}.stats{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0 22px}.stat{flex:1;min-width:130px;border:1px solid var(--line);border-radius:14px;padding:13px;text-align:center}.stat strong{display:block;font:700 1.8rem var(--ar);color:var(--gold)}.stat span{color:var(--muted);font-size:.9rem}.message{border:1px solid var(--line);border-radius:15px;padding:16px;margin:12px 0;background:#102b3a}.message-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.message h3{margin:0;color:var(--gold);font:700 1.25rem var(--ar)}.pill{font-size:.82rem;border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--cream)}.meta{color:var(--muted);font-size:.9rem;margin-top:5px}.note{white-space:pre-wrap;margin:12px 0 0}.empty{text-align:center;color:var(--muted);padding:28px}.hidden{display:none!important}a{color:var(--gold)}button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+</style>
+</head>
+<body><main class="wrap">
+<header class="brand"><b>AbdElrhman &amp; Amira</b><span>مساحة خاصة بالعروسين</span></header>
+<section id="loginPanel" class="panel login"><h1>تسجيل الدخول</h1><p class="muted">لوحة التحكم خاصة بالعروسين فقط</p>
+<form id="loginForm"><label for="email">البريد الإلكتروني</label><input id="email" type="email" autocomplete="username" required><label for="password">كلمة المرور</label><input id="password" type="password" autocomplete="current-password" required><button id="loginBtn" class="full">دخول</button></form><p id="loginError" class="error" role="alert"></p></section>
+<section id="dashboard" class="hidden"><div class="top"><div><h1 style="text-align:right;margin:0">رسائل وتأكيدات الضيوف</h1><div id="signedIn" class="meta"></div></div><div><button id="refreshBtn">تحديث</button> <button id="logoutBtn" style="background:transparent;color:var(--gold)">تسجيل خروج</button></div></div>
+<div class="stats"><div class="stat"><strong id="total">٠</strong><span>إجمالي الردود</span></div><div class="stat"><strong id="yes">٠</strong><span>أكدوا الحضور</span></div><div class="stat"><strong id="people">٠</strong><span>عدد الحضور المتوقع</span></div><div class="stat"><strong id="no">٠</strong><span>اعتذروا</span></div></div>
+<div id="list"></div><p id="loadError" class="error"></p></section>
+<p class="muted" style="margin-top:24px">كل رسالة تظهر هنا فقط بعد تسجيل الدخول بحساب مصرح له.</p>
+</main>
+<script>
+const PROJECT_URL='https://uczdyrffqaegrygdvccx.supabase.co';
+const KEY='sb_publishable_Wzl1UCd5X7a99Uta8Z8mow_xoe-Wgnc';
+const allowed=['abdoramadan1012002@gmail.com','merawaheed22@gmail.com'];
+const $=id=>document.getElementById(id);
+$('loginError').textContent='جاري تجهيز لوحة التحكم...';
+function loadLibrary(src){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=()=>reject(new Error('تعذر تحميل '+src));document.head.appendChild(s);});}
+async function boot(){
+ try {
+  try { await loadLibrary('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'); }
+  catch(first) { await loadLibrary('https://unpkg.com/@supabase/supabase-js@2'); }
+  if(!window.supabase?.createClient) throw new Error('مكتبة Supabase لم تكتمل. تأكد من الإنترنت أو جرّب شبكة أخرى.');
+  const client=window.supabase.createClient(PROJECT_URL,KEY);
+  const digits=n=>Number(n||0).toLocaleString('ar-EG');
+  function safe(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function showDashboard(user){$('loginPanel').classList.add('hidden');$('dashboard').classList.remove('hidden');$('signedIn').textContent=user.email;}
+  async function load(){
+   $('loadError').textContent='';$('list').innerHTML='<p class="empty">جاري تحميل الردود...</p>';
+   const {data,error}=await client.from('guest_messages').select('id,guest_name,attendance,guest_count,message,created_at').order('created_at',{ascending:false});
+   if(error){$('list').innerHTML='';$('loadError').textContent='تعذر تحميل الرسائل: '+error.message;return;}
+   const rows=data||[], yes=rows.filter(x=>x.attendance==='attending'), no=rows.filter(x=>x.attendance==='not_attending');
+   $('total').textContent=digits(rows.length);$('yes').textContent=digits(yes.length);$('no').textContent=digits(no.length);$('people').textContent=digits(yes.reduce((a,x)=>a+Number(x.guest_count||0),0));
+   if(!rows.length){$('list').innerHTML='<p class="empty">لسه مفيش ردود من الضيوف.</p>';return;}
+   $('list').innerHTML=rows.map(x=>{const date=new Date(x.created_at).toLocaleString('ar-EG',{dateStyle:'medium',timeStyle:'short',timeZone:'Africa/Cairo'});const attending=x.attendance==='attending';return `<article class="message"><div class="message-head"><h3>${safe(x.guest_name)}</h3><span class="pill">${attending?'هيحضر':'اعتذر عن الحضور'}</span></div><div class="meta">${attending?'عدد الحضور: '+digits(x.guest_count):'عدد الحضور: —'} · ${safe(date)}</div>${x.message?'<p class="note">'+safe(x.message)+'</p>':''}</article>`}).join('');
+  }
+  async function checkSession(){const {data,error}=await client.auth.getSession();if(error)throw error;const user=data.session?.user;if(user){if(!allowed.includes((user.email||'').toLowerCase())){await client.auth.signOut();return;}showDashboard(user);await load();}else{$('loginError').textContent='اكتب بيانات الدخول واضغط دخول.';}}
+  $('loginForm').addEventListener('submit',async e=>{e.preventDefault();$('loginError').textContent='';$('loginBtn').disabled=true;$('loginBtn').textContent='جاري الدخول...';try{const email=$('email').value.trim().toLowerCase(),password=$('password').value;if(!allowed.includes(email))throw new Error('هذا البريد غير موجود ضمن حسابي العروسين المسموح لهما بالدخول.');if(!password)throw new Error('اكتب كلمة المرور أولاً.');const {data,error}=await client.auth.signInWithPassword({email,password});if(error)throw error;showDashboard(data.user);await load();}catch(err){$('loginError').textContent='مشكلة تسجيل الدخول: '+(err?.message||'خطأ غير معروف');}finally{$('loginBtn').disabled=false;$('loginBtn').textContent='دخول';}});
+  $('refreshBtn').addEventListener('click',load);$('logoutBtn').addEventListener('click',async()=>{await client.auth.signOut();$('dashboard').classList.add('hidden');$('loginPanel').classList.remove('hidden');$('password').value='';});
+  await checkSession();
+ } catch(err) { $('loginError').textContent='تعذر تشغيل لوحة التحكم: '+(err?.message||'خطأ غير معروف')+' — تأكد من الإنترنت ثم أعد فتح الصفحة.'; }
+}
+boot();
+</script></body></html>
